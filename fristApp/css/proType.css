@@ -1,0 +1,16 @@
+#proType_left {
+    width: 5rem;
+    height: 100%;
+    background-color: #ffffff;
+    overflow-x: hidden;
+}
+#proType_left .aui-list {
+    overflow-y: scroll;
+}
+#proType_left .aui-list .aui-list-item-title {
+    font-size: 0.7rem;
+}
+
+#proType_right .aui-card-list{
+    margin-bottom: 0;
+}

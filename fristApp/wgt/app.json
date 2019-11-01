@@ -1,0 +1,50 @@
+{
+    "name": "root",
+    "navigationBar": {
+        "background": "#619BE4",
+        "color":"#fff",
+        "hideBackButton": true
+    },
+    "tabBar": {
+        "animated": true,
+        "selectedColor": "#45C01A",
+        "list": [
+            {
+                "text": "首页",
+                "iconPath": "widget://image/nav_tab_1.png",
+                "selectedIconPath": "widget://image/nav_tab_1_on.png"
+            }, {
+                "text": "分类",
+                "iconPath": "widget://image/nav_tab_2.png",
+                "selectedIconPath": "widget://image/nav_tab_2_on.png"
+            }, {
+                "text": "购物车",
+                "iconPath": "widget://image/nav_tab_3.png",
+                "selectedIconPath": "widget://image/nav_tab_3_on.png"
+            }, {
+                "text": "我",
+                "iconPath": "widget://image/nav_tab_4.png",
+                "selectedIconPath": "widget://image/nav_tab_4_on.png"
+            }
+        ],
+        "frames": [
+            {
+                "title": "首页",
+                "name": "index",
+                "url": "widget://html/index.html"
+            }, {
+                "title": "分类",
+                "name": "proType",
+                "url": "widget://html/proType_win.html"
+            }, {
+                "title": "购物车",
+                "name": "tab_frm_3",
+                "url": "widget://html/buyCar.html"
+            }, {
+                "title": "我",
+                "name": "tab_frm_4",
+                "url": "widget://html/user.html"
+            }
+        ]
+    }
+}

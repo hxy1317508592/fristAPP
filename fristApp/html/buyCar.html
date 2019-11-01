@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/buyCar.css" />
+</head>
+
+<body>
+    <div class="CarList" id="CarList" v-cloak>
+        <header class="header">购物数量({{allNum}})</header>
+        <div class="proItems">
+            <div class="proItem" v-for="(items,index) in proList">
+                <label :for="items.id" class="checked">
+                    <input class="aui-checkbox" type="checkbox" :id="items.id" v-model="items.checked">
+                </label>
+                <img :src="items.img" />
+                <div class="proInfo">
+                    <span class="proName" @click="detail">{{items.title}}</span>
+                    <div class="proSku">
+                        <span v-for="item in items.sku">{{item}}</span>
+                    </div>
+                    <div class="proNumber">
+                        <div class="proMoney">￥<span>{{items.money}}</span></div>
+                        <div class="proAmount">
+                            <span @click="reduce(index)">➖</span>{{items.num}}<span @click="add(index)">➕</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer v-if="proList.length != 0">
+            <label class="allCheck">
+                <input class="aui-checkbox" type="checkbox" @change="changeAll" v-model="isSelectAll">
+                全选
+            </label>
+            <div class="footRight">
+                <div class="proTotal">
+                    合计：<span>￥{{total}}</span>
+                </div>
+                <div v-if="!del" class="buy">确认购买</div>
+                <div v-else class="buy" @click="remove">删除</div>
+            </div>
+        </footer>
+    </div>
+</body>
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    new Vue({
+        el: "#CarList",
+        data: {
+            del:false,
+            proList: [{
+                id: 0,
+                img: 'http://img10.360buyimg.com/n1/s450x450_jfs/t4276/257/2416766721/125228/ba72a107/58d1d078N20e18b62.jpg',
+                title: "iPhone 11Plus",
+                sku: ["玫瑰金", "双卡双待", "超长待机"],
+                num: 10,
+                money: 999
+            }, {
+                id: 1,
+                img: 'http://img10.360buyimg.com/n1/s450x450_jfs/t4276/257/2416766721/125228/ba72a107/58d1d078N20e18b62.jpg',
+                title: "锤子手机",
+                sku: ["红色", "防水防摔", "超长待机"],
+                num: 5,
+                money: 999
+            }, {
+                id: 3,
+                img: 'http://img10.360buyimg.com/n1/s450x450_jfs/t4276/257/2416766721/125228/ba72a107/58d1d078N20e18b62.jpg',
+                title: "菠萝手机",
+                sku: ["菠萝绿", "防水防摔", "超长待机"],
+                num: 100,
+                money: 100
+            }]
+        },
+        mounted() {
+            let that = this
+            apiready = function() {
+                api.addEventListener({
+                    name: 'navitembtn'
+                }, function(ret, err) {
+                    if (ret.type == 'right') {
+                        that.del = !that.del
+                        if(that.del){
+                            that.proList.map(function(val){
+                                val.checked = false
+                            })
+                            api.setNavBarAttr({
+                                rightButtons: [{
+                                    text: '完成',
+                                    fontSize:"12"
+                                }]
+                            });
+                        }else{
+                            that.proList.map(function(val){
+                                val.checked = true
+                            })
+                            api.setNavBarAttr({
+                                rightButtons: [{
+                                    text: '编辑',
+                                    fontSize:"12"
+                                }]
+                            });
+                        }
+                    }
+                });
+            };
+            that.proList.map(function(item){
+                Vue.set(item, 'checked', true)
+            })
+        },
+        computed: {
+            // 初始化全选
+            isSelectAll: function() {
+                //如果proList中每一条数据的checked都为true，返回true，否则返回false;
+                return this.proList.every(function(val) {
+                    return val.checked
+                });
+            },
+            // 合计价格
+            total:function(){
+                let total = 0
+                this.proList.map(function(val) {
+                    if(val.checked){
+                        total += val.num * val.money
+                    }
+                });
+                return total
+            },
+            //购物数量
+            allNum:function(){
+                let allNum = 0
+                this.proList.map(function(val){
+                    if(val.checked){
+                        allNum ++
+                    }
+                })
+                return allNum
+            }
+        },
+        methods: {
+            // 减少商品数量
+            reduce:function(e){
+                if(this.proList[e].num <= 1){
+                    api.toast({
+                        msg: '数量不能少于1',
+                        duration: 1500,
+                        location: 'middle'
+                    });
+                }else{
+                    this.proList[e].num--
+                }
+            },
+            // 增加商品数量
+            add:function(e){
+                this.proList[e].num++
+            },
+            // 改变全选
+            changeAll:function(){
+                if(this.isSelectAll){
+                    this.proList.map(function(val){
+                        val.checked = false
+                    })
+                }else{
+                    this.proList.map(function(val){
+                        val.checked = true
+                    })
+                }
+            },
+            // 删除
+            remove:function(){
+                let that = this
+                api.confirm({
+                    title: '提示信息',
+                    msg: '确认删除所选商品',
+                    buttons: ['确定', '取消']
+                }, function(ret, err){
+                    if( ret.buttonIndex == 1 ){
+                        that.proList = that.proList.filter(function(item){
+                            return !item.checked
+                        })
+                        api.toast({
+                            msg: '操作成功',
+                            duration: 1500,
+                            location: 'middle'
+                        });
+
+                    }
+                });
+            },
+            // 跳转商品详情
+            detail:function(){
+                api.openWin({
+                    name: 'proDetail',
+                    url: './proDetail_win.html'
+                });
+            }
+        }
+    })
+</script>
+
+</html>

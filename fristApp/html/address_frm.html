@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+
+<body>
+    <div id="address" v-cloak>
+        <section class="aui-content aui-margin-t-15">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label aui-border-r">姓名</div>
+                        <div class="aui-list-item-input aui-padded-l-10">
+                            <input type="text" placeholder="输入姓名" minlength="6">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label aui-border-r color-orange">
+                            手机号 <small class="aui-margin-l-5 aui-text-warning">+86</small>
+                        </div>
+                        <div class="aui-list-item-input aui-padded-l-10">
+                            <input type="number" pattern="[0-9]*" placeholder="输入手机号" id="mobile">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label aui-border-r">地址</div>
+                        <div class="aui-list-item-input aui-padded-l-10">
+                            <input type="text" readonly @click="selectAddr" placeholder="请选择地址" v-if="sheng == '' ">
+                            <div @click="selectAddr" class="selectAddr" v-else>
+                                <span>{{sheng}}</span>
+                                <span>{{shi}}</span>
+                                <span>{{qu}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label aui-border-r">详细地址</div>
+                        <div class="aui-list-item-input aui-padded-l-10">
+                            <input type="text" placeholder="输入详细地址" minlength="6">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="setDef">
+                <label for="def">设为默认地址</label>
+                <input class="aui-switch" type="checkbox" id="def" checked="">
+            </div>
+            <div class="submit">保存</div>
+        </section>
+    </div>
+</body>
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    new Vue({
+        el: "#address",
+        data: {
+            UIActionSelector: '',
+            sheng: '',
+            shi: '',
+            qu: ''
+        },
+        mounted() {
+            let that = this
+            apiready = function() {
+                var UIActionSelector = api.require('UIActionSelector');
+                that.UIActionSelector = UIActionSelector
+                let id = api.pageParam.id
+
+            };
+        },
+        methods: {
+            selectAddr: function() {
+                let that = this
+                this.UIActionSelector.open({
+                    datas: 'widget://res/city.json',
+                    layout: {
+                        row: 5,
+                        col: 3,
+                        height: 30,
+                        size: 12,
+                        sizeActive: 14,
+                        rowSpacing: 5,
+                        colSpacing: 10,
+                        maskBg: 'rgba(0,0,0,0.2)',
+                        bg: '#fff',
+                        color: '#888',
+                        colorActive: '#f00',
+                        colorSelected: '#f00'
+                    },
+                    bgCorner: 10,
+                    animation: true,
+                    cancel: {
+                        text: '取消',
+                        size: 12,
+                        w: 90,
+                        h: 35,
+                        bg: '#fff',
+                        bgActive: '#ccc',
+                        color: '#888',
+                        colorActive: '#fff'
+                    },
+                    ok: {
+                        text: '确定',
+                        size: 12,
+                        w: 90,
+                        h: 35,
+                        bg: '#fff',
+                        bgActive: '#ccc',
+                        color: '#888',
+                        colorActive: '#fff'
+                    },
+                    title: {
+                        text: '请选择',
+                        size: 12,
+                        h: 44,
+                        bg: '#eee',
+                        color: '#888'
+                    },
+                    fixedOn: api.frameName
+                }, function(ret, err) {
+                    if (ret) {
+                        // alert(JSON.stringify(ret));
+                        that.sheng = ret.level1
+                        that.shi = ret.level2
+                        that.qu = ret.level3
+                    } else {
+                        alert(JSON.stringify(err));
+                    }
+                });
+            }
+        },
+    })
+</script>
+
+</html>

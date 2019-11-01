@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+</head>
+<body>
+    <header class="aui-bar aui-bar-nav" id="aui-header" v-cloak>
+        <a class="aui-btn aui-pull-left" tapmode @click="closeWin">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div class="aui-title">{{title}}</div>
+    </header>
+</body>
+
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    new Vue({
+        el:"#aui-header",
+        data:{
+            title:''
+        },
+        mounted(){
+            let that = this
+            apiready = function(){
+                api.parseTapmode();
+                that.title = api.pageParam.title;
+                let id = api.pageParam.id
+                var header = $api.byId('aui-header');
+                var headerPos = $api.offset(header);
+                api.openFrame({
+                    name: 'address',
+                    url: 'address_frm.html',
+                    bounces: false,
+                    pageParam:{
+                        headerPos:headerPos,
+                        id:id
+                    },
+                    rect: {
+                        x: 0,
+                        y: headerPos.h,
+                        w: 'auto',
+                        h: 'auto'
+                    }
+                })
+            };
+        },
+        methods:{
+            closeWin:function (){
+                api.closeWin({});
+            }
+        }
+    })
+</script>
+</html>

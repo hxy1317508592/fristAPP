@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+
+<body>
+    <section class="aui-content" id="addreList" v-cloak>
+        <div class="aui-card-list" v-for="(item,index) in addrItems">
+            <div class="aui-card-list-header aui-font-size-14">
+                {{item.name}}&nbsp;&nbsp;{{item.tel}}
+            </div>
+            <div class="aui-card-list-content-padded aui-padded-t-0 text-light">
+                {{item.address}}
+            </div>
+            <div class="aui-card-list-footer aui-border-t">
+                <div @click="def(index)">
+                    <!-- aui-checked 选中样式 -->
+                    <span class="aui-radio aui-margin-r-5"></span>默认地址
+                </div>
+                <div>
+                    <span @click="edit(index)"><i class="aui-iconfont aui-icon-edit aui-margin-r-5 aui-font-size-14"></i>编辑</span>
+                    <span @click="del(index)"><i class="aui-iconfont aui-icon-trash aui-margin-r-5 aui-margin-l-15 aui-font-size-14"></i>删除</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#addreList',
+        data: {
+            addrItems:[{
+                id:0,
+                name:"小白兔",
+                tel:"152****0989",
+                address:"北京市海淀区龙翔路甲1号泰翔商务楼"
+            },{
+                id:1,
+                name:"小白兔",
+                tel:"152****0989",
+                address:"北京市海淀区龙翔路甲1号泰翔商务楼"
+            },{
+                id:2,
+                name:"流浪男",
+                tel:"152****0989",
+                address:"北京市海淀区龙翔路甲1号泰翔商务楼"
+            },{
+                id:3,
+                name:"APICloud",
+                tel:"152****0989",
+                address:"北京市海淀区龙翔路甲1号泰翔商务楼"
+            }]
+        },
+        mounted() {
+            apiready = function() {
+                api.parseTapmode();
+            };
+        },
+        methods: {
+            edit:function(e){
+                let that = this
+                api.openWin({
+                    name: 'address',
+                    url: './address_win.html',
+                    pageParam: {
+                        title: '修改地址',
+                        id:that.addrItems[e].id
+                    }
+                });
+            },
+            del:function(e){
+                let that = this
+                api.confirm({
+                    title: '提示',
+                    msg: '是否删除该地址',
+                    buttons: ['确定', '取消']
+                }, function(ret, err){
+                    if( ret ){
+                        if(ret.buttonIndex == 1){
+                            that.addrItems.splice(e,1)
+                        }
+                    }
+                });
+            },
+            def:function(e){
+                let that = this
+
+            }
+        }
+    })
+</script>
+
+</html>
